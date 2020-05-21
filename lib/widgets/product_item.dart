@@ -1,3 +1,4 @@
+import 'package:ShopApp/providers/cartProviders.dart';
 import 'package:ShopApp/providers/product_overview_model.dart';
 import 'package:ShopApp/screens/product_detail_screen.dart';
 import 'package:flutter/material.dart';
@@ -12,10 +13,11 @@ class ProductItem extends StatelessWidget {
     and what if only one part of that widget is actually concerned with the changes and not the other one, here in this case
     only the favorite button is concerned with the chnages in the data and no other container is concerned. so thats why
     we can also use Consumer approach which wraps arounds a widget which is concerned with the data.
-    Also we can wrap thw whole widget here with Consumer too. But as we are going to wrap only the Icon button then all the 
+    Also we can wrap thw whole widget here with Consumer too. But as we are going to wrap only the Icon button but then all the 
     other containers needs data too, thats why we will use the Provider listener too but with listen = false so that it atleast
     once listen to the data.
      */
+    final cartObject = Provider.of<CartProvider>(context);
     return Container(
       padding: EdgeInsets.all(0),
       margin: EdgeInsets.all(0),
@@ -53,7 +55,7 @@ class ProductItem extends StatelessWidget {
                         ),
                       ),
                     ),
-                    Consumer<ProdOverview>( 
+                    Consumer<ProdOverview>(
                       // this is syntax of Consumer method, a lot similar to the Provider method above.
                       // this method helps with performance in larger apps.
                       builder: (context, selectedProduct, child) {
@@ -65,9 +67,18 @@ class ProductItem extends StatelessWidget {
                           ),
                           color: Colors.amber,
                           onPressed: () {
-                            selectedProduct.favoriteToggler();
+                            selectedProduct.favoriteToggler(selectedProduct.id);
                           },
                         );
+                      },
+                    ),
+                    IconButton(
+                      icon: Icon(
+                        Icons.shopping_cart,
+                      ),
+                      color: Colors.amber,
+                      onPressed: () {
+                        cartObject.addCartItem(selectedProduct.id, selectedProduct.price, selectedProduct.name, selectedProduct.imageUrl);
                       },
                     ),
                   ],
